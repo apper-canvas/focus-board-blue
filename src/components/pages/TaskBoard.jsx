@@ -75,7 +75,7 @@ const TaskBoard = () => {
                   <ApperIcon name="CheckSquare" size={24} className="text-white" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Focus Board</h1>
+<h1 className="text-2xl font-bold text-gray-900">Focus Board Pro</h1>
                   <p className="text-sm text-gray-600">Organize your tasks efficiently</p>
                 </div>
               </div>

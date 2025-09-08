@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1",
+    "name": "Development",
+    "color": "#2563eb",
+    "taskCount": 2
+  },
+  {
+    "Id": "2",
+    "name": "Communication",
+    "color": "#10b981",
+    "taskCount": 2
+  },
+  {
+    "Id": "3",
+    "name": "Operations",
+    "color": "#f59e0b",
+    "taskCount": 1
+  },
+  {
+    "Id": "4",
+    "name": "Research",
+    "color": "#8b5cf6",
+    "taskCount": 1
+  }
+]

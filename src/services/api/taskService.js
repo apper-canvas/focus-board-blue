@@ -1,4 +1,7 @@
-import tasksMockData from "@/services/mockData/tasks.json"
+import React from "react";
+import Error from "@/components/ui/Error";
+import taskService from "@/services/mockData/categories.json";
+import tasksMockData from "@/services/mockData/tasks.json";
 
 class TaskService {
   constructor() {
@@ -113,7 +116,7 @@ class TaskService {
     })
   }
 
-  async searchTasks(searchTerm) {
+async searchTasks(searchTerm) {
     return new Promise((resolve) => {
       setTimeout(() => {
         const searchResults = this.tasks.filter(task => 
@@ -123,6 +126,33 @@ class TaskService {
         resolve(searchResults.map(task => ({ ...task })))
       }, 200)
     })
+  }
+
+  async generateDescription(title) {
+    try {
+      const response = await fetch(`https://test-api.apper.io/fn/${import.meta.env.VITE_GENERATE_TASK_DESCRIPTION}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title })
+      })
+
+      const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to generate description')
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to generate description')
+      }
+
+      return data.description
+    } catch (error) {
+      console.error('Error generating description:', error)
+      throw new Error(error.message || 'Failed to generate description. Please try again.')
+    }
   }
 }
 

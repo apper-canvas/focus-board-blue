@@ -7,7 +7,6 @@ import FormField from "@/components/molecules/FormField"
 import taskService from "@/services/api/taskService"
 import categoryService from "@/services/api/categoryService"
 import { format } from "date-fns"
-
 const TaskForm = ({ onTaskCreated, onClose }) => {
   const [formData, setFormData] = useState({
     title: "",
@@ -17,7 +16,8 @@ const TaskForm = ({ onTaskCreated, onClose }) => {
     categoryId: ""
   })
   const [categories, setCategories] = useState([])
-  const [loading, setLoading] = useState(false)
+const [loading, setLoading] = useState(false)
+  const [aiLoading, setAiLoading] = useState(false)
   const [errors, setErrors] = useState({})
 
   useEffect(() => {
@@ -76,10 +76,28 @@ const TaskForm = ({ onTaskCreated, onClose }) => {
     }
   }
 
-  const handleInputChange = (field, value) => {
+const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }))
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: "" }))
+    }
+  }
+
+  const handleGenerateDescription = async () => {
+    if (!formData.title.trim()) {
+      toast.error("Please enter a task title first")
+      return
+    }
+
+    setAiLoading(true)
+    try {
+      const description = await taskService.generateDescription(formData.title)
+      setFormData(prev => ({ ...prev, description }))
+      toast.success("Description generated successfully!")
+    } catch (error) {
+      toast.error(error.message || "Failed to generate description")
+    } finally {
+      setAiLoading(false)
     }
   }
 
@@ -119,14 +137,41 @@ const TaskForm = ({ onTaskCreated, onClose }) => {
           error={errors.title}
         />
 
-        <FormField
-          label="Description"
-          type="textarea"
-          rows={3}
-          value={formData.description}
-          onChange={(e) => handleInputChange("description", e.target.value)}
-          placeholder="Add more details about this task..."
-        />
+<div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <label className="block text-sm font-medium text-gray-700">
+              Description
+            </label>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleGenerateDescription}
+              disabled={aiLoading || !formData.title.trim()}
+              className="text-xs text-primary-600 hover:text-primary-700 disabled:opacity-50"
+            >
+              {aiLoading ? (
+                <>
+                  <ApperIcon name="Loader2" size={12} className="mr-1 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <ApperIcon name="Sparkles" size={12} className="mr-1" />
+                  Generate with AI
+                </>
+              )}
+            </Button>
+          </div>
+          <FormField
+            type="textarea"
+            rows={3}
+            value={formData.description}
+            onChange={(e) => handleInputChange("description", e.target.value)}
+            placeholder="Add more details about this task or click 'Generate with AI'..."
+            disabled={aiLoading}
+          />
+        </div>
 
         <div className="grid grid-cols-2 gap-4">
           <FormField

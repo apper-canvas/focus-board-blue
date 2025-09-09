@@ -1,8 +1,4 @@
-import React from "react";
-import Error from "@/components/ui/Error";
-import taskService from "@/services/mockData/categories.json";
 import tasksMockData from "@/services/mockData/tasks.json";
-
 class TaskService {
   constructor() {
     this.tasks = [...tasksMockData]
